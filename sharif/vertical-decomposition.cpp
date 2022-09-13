@@ -176,3 +176,26 @@ dbl union_area(vector<tuple<pt, pt, pt> > triangles){
     return ans/2;
 }
 
+pair<dbl,dbl> union_perimeter(vector<tuple<pt, pt, pt> > triangles){
+    //Same as before
+    pair<dbl,dbl> ans = make_pair(0,0);
+    for(size_t i = 0; i < segments.size(); i++){
+        //Same as before
+        double dist=(segments[i][1].x-segments[i][0].x)*(segments[i][1].x-segments[i][0].x)+(segments[i][1].y-segments[i][0].y)*(segments[i][1].y-segments[i][0].y);
+        dist=sqrt(dist);
+        while(j < evts.size()){
+            size_t ptr = j;
+            while(ptr < evts.size() && eq(evts[j].first, evts[ptr].first)){
+                balance += evts[ptr].second;
+                ++ptr;
+            }
+            if(!balance && !eq(evts[j].first, r)){
+                dbl next_x = ptr == evts.size() ? r : evts[ptr].first;
+                ans.first += dist * (next_x - evts[j].first) / (r-l);
+                if(eq(segments[i][1].y,segments[i][0].y)) ans.second+=(next_x - evts[j].first);
+            }
+            j = ptr;
+        }
+    }
+    return ans;
+}
