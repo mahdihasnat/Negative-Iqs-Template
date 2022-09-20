@@ -16,7 +16,7 @@ struct cmp_y
 {
     bool operator()(const pt & a, const pt & b) const
     {
-        return a.y < b.y;
+        return a.y < b.y || (a.y == b.y && a.x < b.x);
     }
 };
 
@@ -58,7 +58,13 @@ void rec(int l, int r)
     }
 
     int m = (l + r) >> 1;
-    int midx = a[m].x;
+    int midx = a[m-1].x;
+    /*
+     * Got WA in a team contest
+     * for putting midx = a[m].x;
+     * Don't know why. Maybe due to
+     * floating point numbers.
+     */
     rec(l, m);
     rec(m, r);
 
