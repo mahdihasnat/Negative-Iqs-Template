@@ -41,4 +41,7 @@ void convex_hull(vector<pt>& a) {
         a.push_back(up[i]);
     for (int i = down.size() - 2; i > 0; i--)
         a.push_back(down[i]);
+    int n = a.size();
+    for(int i=0; i < n - 1 - i; i++)
+        swap(a[i],a[n-1-i]);
 }
