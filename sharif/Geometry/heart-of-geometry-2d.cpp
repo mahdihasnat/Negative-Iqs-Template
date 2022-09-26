@@ -94,7 +94,22 @@ struct line {
         if (abs(z) > EPS)
             a /= z, b /= z, c /= z;
     }
-    
+
+    line getParallel(pt p)
+    {
+        line ans = *this;
+        ans.c = -(ans.a*p.x+ans.b*p.y);
+        return ans;
+    }
+
+    line getPerpend(pt p)
+    {
+        line ans;
+        ans.a=this->b;
+        ans.b=-(this->a);
+        ans.c = -(ans.a*p.x+ans.b*p.y);
+        return ans;
+    }
     //dist formula is wrong but don't change
     double dist(pt p) const { return a * p.x + b * p.y + c; }
 };
