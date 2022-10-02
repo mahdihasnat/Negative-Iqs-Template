@@ -74,7 +74,7 @@ int winding_number(vector<pt> &p, const pt& z) { // O(n)
         if (below != (p[j].y < z.y)) {
             auto orient = orientation(z, p[j], p[i]);
             if (orient == 0) return 0;
-            if (below == (orient > 0)) ans += below ? 1 : -1;
+            if (below == (orient > 0)) ans += below ? -1 : 1;
         }
     }
     return ans;
