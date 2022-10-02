@@ -39,22 +39,39 @@ struct pt
     {
         return x < p.x - EPS || (abs(x - p.x) < EPS && y < p.y - EPS);
     }
+    bool operator==(const pt& p) const
+    {
+        return abs(x-p.x)<EPS && abs(y-p.y)<EPS;
+    }
 };
 
-double dist(pt a , pt b) {
+double dist_sqr(pt a,pt b)
+{
+    return ((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
+}
+
+double dist(pt a, pt b)
+{
     return sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
 }
 
-bool cmp(pt a, pt b) {
-    return a.x < b.x || (a.x == b.x && a.y < b.y);
+bool withinSegment(pt a,pt b,pt c)
+{
+    return min(a.x,c.x)-EPS<=b.x && b.x<=max(a.x,c.x)+EPS && min(a.y,c.y)-EPS<=b.y && b.y<=max(a.y,c.y)+EPS;
 }
 
-bool cw(pt a, pt b, pt c) {
-    return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) < 0;
-}
-
-bool ccw(pt a, pt b, pt c) {
-    return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) > 0;
+double angle(pt a,pt b,pt c)
+{
+    if(b==a || b==c) return 0;
+    double A2 = dist_sqr(b,c);
+    double C2 = dist_sqr(a,b);
+    double B2 = dist_sqr(c,a);
+    double A = sqrt(A2), C = sqrt(C2);
+    double ans = (A2 + C2 - B2)/(A*C*2);
+    if(ans<-1) ans=acos(-1);
+    else if(ans>1) ans=acos(1);
+    else ans = acos(ans);
+    return ans;
 }
 
 struct cmp_x
@@ -76,6 +93,11 @@ struct cmp_y
 struct circle : pt {
     ftype r;
 };
+
+bool insideCircle(circle c, pt p)
+{
+    return dist_sqr(c,p) <= c.r*c.r + EPS;
+}
 
 struct line {
     ftype a, b, c;
@@ -363,6 +385,49 @@ vector<pt> circle_line_intersections(circle cir,line l)
     {
         ans[i] = ans[i] + cir;
     }
+    return ans;
+}
+
+double circle_polygon_intersection(circle c,vector<pt> &V)
+{
+    int n = V.size();
+    double ans = 0;
+    for(int i=0; i<n; i++)
+    {
+        line l(V[i],V[(i+1)%n]);
+        vector<pt> lpts = circle_line_intersections(c,l);
+        int sz=lpts.size();
+        for(int j=sz-1; j>=0; j--)
+        {
+            if(!withinSegment(V[i],lpts[j],V[(i+1)%n]))
+            {
+                swap(lpts.back(),lpts[j]);
+                lpts.pop_back();
+            }
+        }
+        lpts.push_back(V[i]);
+        lpts.push_back(V[(i+1)%n]);
+        sort(lpts.begin(),lpts.end());
+        sz=lpts.size();
+        if(V[(i+1)%n]<V[i])
+            reverse(lpts.begin(),lpts.end());
+        for(int j=1; j<sz; j++)
+        {
+            if(insideCircle(c,lpts[j-1])
+               &&insideCircle(c,lpts[j]))
+                ans = ans + area(lpts[j-1],lpts[j],c);
+            else
+            {
+                double ang = angle(lpts[j-1],c,lpts[j]);
+                double aa = c.r*c.r*ang/2;
+                if(ccw(lpts[j-1],lpts[j],c))
+                    ans = ans+aa;
+                else
+                    ans = ans-aa;
+            }
+        }
+    }
+    ans = abs(ans);
     return ans;
 }
 
