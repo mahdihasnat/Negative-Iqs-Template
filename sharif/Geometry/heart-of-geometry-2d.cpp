@@ -104,6 +104,26 @@ double angle(pt a,pt b,pt c)
     return ans;
 }
 
+bool cmp(pt a, pt b)
+{
+    return a.x < b.x || (a.x == b.x && a.y < b.y);
+}
+
+bool cw(pt a, pt b, pt c)
+{
+    return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) < 0;
+}
+
+bool ccw(pt a, pt b, pt c)
+{
+    return a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y) > 0;
+}
+
+double area(pt a, pt b, pt c)
+{
+    return (a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y))/2;
+}
+
 struct cmp_x
 {
     bool operator()(const pt & a, const pt & b) const
