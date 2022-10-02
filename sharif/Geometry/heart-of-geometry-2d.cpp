@@ -154,6 +154,11 @@ struct line {
         return ans;
     }
 
+    ftype getValue(pt p)
+    {
+        return a*p.x+b*p.y+c;
+    }
+
     line getPerpend(pt p)
     {
         line ans;
