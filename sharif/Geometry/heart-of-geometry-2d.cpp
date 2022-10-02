@@ -90,11 +90,6 @@ double dist(pt a, pt b)
     return sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
 }
 
-bool withinSegment(pt a,pt b,pt c)
-{
-    return min(a.x,c.x)-EPS<=b.x && b.x<=max(a.x,c.x)+EPS && min(a.y,c.y)-EPS<=b.y && b.y<=max(a.y,c.y)+EPS;
-}
-
 double angle(pt a,pt b,pt c)
 {
     if(b==a || b==c) return 0;
@@ -434,7 +429,7 @@ double circle_polygon_intersection(circle c,vector<pt> &V)
         int sz=lpts.size();
         for(int j=sz-1; j>=0; j--)
         {
-            if(!withinSegment(V[i],lpts[j],V[(i+1)%n]))
+            if(!is_point_on_seg(V[i],V[(i+1)%n],lpts[j]))
             {
                 swap(lpts.back(),lpts[j]);
                 lpts.pop_back();
