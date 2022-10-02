@@ -45,6 +45,41 @@ struct pt
     }
 };
 
+int sign(double x) { return (x > EPS) - (x < -EPS); }
+inline int orientation(pt a, pt b, pt c) { return sign(a.cross(b,c)); }
+
+bool is_point_on_seg(pt a, pt b, pt p) {
+    if (fabs(b.cross(p,a)) < EPS) {
+        if (p.x < min(a.x, b.x) - EPS || p.x > max(a.x, b.x) + EPS) return false;
+        if (p.y < min(a.y, b.y) - EPS || p.y > max(a.y, b.y) + EPS) return false;
+        return true;
+    }
+    return false;
+}
+
+bool is_point_on_polygon(vector<pt> &p, const pt& z) {
+    int n = p.size();
+    for (int i = 0; i < n; i++) {
+    	if (is_point_on_seg(p[i], p[(i + 1) % n], z)) return 1;
+    }
+    return 0;
+}
+
+int winding_number(vector<pt> &p, const pt& z) { // O(n)
+    if (is_point_on_polygon(p, z)) return 1e9;
+    int n = p.size(), ans = 0;
+    for (int i = 0; i < n; ++i) {
+        int j = (i + 1) % n;
+        bool below = p[i].y < z.y;
+        if (below != (p[j].y < z.y)) {
+            auto orient = orientation(z, p[j], p[i]);
+            if (orient == 0) return 0;
+            if (below == (orient > 0)) ans += below ? 1 : -1;
+        }
+    }
+    return ans;
+}
+
 double dist_sqr(pt a,pt b)
 {
     return ((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
