@@ -1,7 +1,3 @@
-///Source: Zahin vai's Library
-#include<bits/stdc++.h>
-using namespace std;
-typedef long long LL;
 #define MAXN 500
 #define MAXM 100010
 #define MAXP 666666
@@ -51,11 +47,4 @@ namespace pcf{
         for(i=a;primes[i]<=s;i++) res=res-Lehmer(m/primes[i])+Lehmer(primes[i])-1;
         return res;
     }
-}
-///Solves https://old.yosupo.jp/problem/counting_primes
-int main() {
-    pcf::init();
-    long long n;
-    cin>>n;
-    cout<<pcf::Lehmer(n)<<endl;
 }

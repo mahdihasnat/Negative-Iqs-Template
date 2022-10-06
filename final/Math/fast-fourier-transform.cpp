@@ -78,6 +78,9 @@ const int mod = 998244353;
 const int root = 15311432;
 const int root_1 = 469870224;
 const int root_pw = 1 << 23;
+998244353 = 119 * 2^23 + 1 , primitive root = 3
+985661441 = 235 * 2^22 + 1 , primitive root = 3
+1012924417 = 483 * 2^21 + 1 , primitive root = 5
 void fft(vector<int> & a, bool invert) {
     int n = a.size();
     for (int i = 1, j = 0; i < n; i++) {

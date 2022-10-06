@@ -157,11 +157,7 @@ struct LinkCut : SplayTree {
         return ans;
     }
 };
-// tested on https://old.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    int n, q;
     cin >> n >> q;
     LinkCut lct(n);
     for (int i = 1; i <= n; i++) {
