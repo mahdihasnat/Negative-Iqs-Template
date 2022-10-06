@@ -89,13 +89,11 @@ bool ccw(pt a, pt b, pt c, bool include_collinear=false) {
     int o = orientation(a, b, c);
     return o > 0 || (include_collinear && o == 0);
 }
-
 bool cw(pt a, pt b, pt c, bool include_collinear=false) {
     int o = orientation(a, b, c);
     return o < 0 || (include_collinear && o == 0);
 }
 bool collinear(pt a, pt b, pt c) { return orientation(a, b, c) == 0; }
-
 double area(pt a, pt b, pt c){
     return (a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y))/2;
 }
