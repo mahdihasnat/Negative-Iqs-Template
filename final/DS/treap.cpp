@@ -37,6 +37,7 @@ class treap{
             insert (it->key < t->key ? t->l : t->r, it);
         upd_cnt(t);
     }
+    // keys(l) < keys(r)
     void merge (item * & t, item * l, item * r){
         if (!l || !r)
             t = l ? l : r;

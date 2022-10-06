@@ -15,6 +15,9 @@ rb_tree_tag,
 tree_order_statistics_node_update>
 ordered_set;
 
+//#pragma GCC optimize("O3,unroll-loops")
+//#pragma GCC target("avx2,bmi,bmi2,lzcnt")
+//mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
