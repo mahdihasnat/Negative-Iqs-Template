@@ -1,6 +1,5 @@
 class SuffixAutomaton{
-bool complete;
-int last;
+bool complete; int last;
 set<char> alphabet;
 struct state{
     int len, link, endpos, first_pos,snas,height;
@@ -9,15 +8,11 @@ struct state{
     map<char, int> next;
     vector<int> inv_link;
     state(int leng=0,int li=0){
-        len=leng;
-        link=li;
-        first_pos=-1;
-        substrings=0;
+        len=leng;   link=li;
+        first_pos=-1;   substrings=0;
         sublen=0; // length of all substrings
-        endpos=1;
         snas=0; // shortest_non_appearing_string
-        is_clone=false;
-        height=0;
+        endpos=1;   is_clone=false; height=0;
     }
 };
 vector<state> st;
@@ -27,27 +22,27 @@ void process(int node){
     st[node].snas=st.size();
     if((int) st[node].next.size()<(int) alphabet.size()) 
         st[node].snas=1;
-    for(mit=st[node].next.begin(); mit!=st[node].next.end(); ++mit){
-        if(st[mit->second].substrings==0) process(mit->second);
-        st[node].height=max(st[node].height,1+st[mit->second].height);
-        st[node].substrings=st[node].substrings+st[mit->second].substrings;
-        st[node].sublen=st[node].sublen
-        +st[mit->second].sublen+st[mit->second].substrings;
-        st[node].snas=min(st[node].snas,
-                                    1+st[mit->second].snas);
+for(mit=st[node].next.begin(); mit!=st[node].next.end();++mit){
+    if(st[mit->second].substrings==0) process(mit->second);
+st[node].height=max(st[node].height,1+st[mit->second].height);
+    st[node].substrings=
+                st[node].substrings+st[mit->second].substrings;
+    st[node].sublen=st[node].sublen
+    +st[mit->second].sublen+st[mit->second].substrings;
+    st[node].snas=min(st[node].snas,
+                                1+st[mit->second].snas);
     }
-    if(st[node].link!=-1){
+    if(st[node].link!=-1)
         st[st[node].link].inv_link.push_back(node);
-    }
 }
 void set_suffix_links(int node){
     int i;
     for(i=0; i<st[node].inv_link.size(); i++){
         set_suffix_links(st[node].inv_link[i]);
-        st[node].endpos=st[node].endpos+st[st[node].inv_link[i]].endpos;
-    }
+        st[node].endpos=
+        st[node].endpos+st[st[node].inv_link[i]].endpos; }
 }
-void output_all_occurrences(int v, int P_length,vector<int> &pos){
+voi output_all_occurrences(int v,int P_length,vector<int>&pos){
     if (!st[v].is_clone)
         pos.push_back(st[v].first_pos - P_length + 1);
     for (int u : st[v].inv_link)
@@ -56,8 +51,8 @@ void output_all_occurrences(int v, int P_length,vector<int> &pos){
 void kth_smallest(int node,int k,vector<char> &str){
     if(k==0) return;
     map<char, int> ::iterator mit;
-    for(mit=st[node].next.begin(); mit!=st[node].next.end(); ++mit){
-        if(st[mit->second].substrings<k) k=k-st[mit->second].substrings;
+for(mit=st[node].next.begin(); mit!=st[node].next.end();++mit){
+if(st[mit->second].substrings<k)k=k-st[mit->second].substrings;
         else{
             str.push_back(mit->first);
             kth_smallest(mit->second,k-1,str);
@@ -65,16 +60,17 @@ void kth_smallest(int node,int k,vector<char> &str){
         }
     }
 }
-int find_occurrence_index(int node,int index,vector<char> &str){
+int find_occurrence_index(int node,int index,vector<char>&str){
     if(index==str.size()) return node;
     if(!st[node].next.count(str[index])) return -1;
-    else return find_occurrence_index(st[node].next[str[index]],index+1,str);
+    else return find_occurrence_index(st[node].next[str[index]]
+                                                ,index+1,str);
 }
 void klen_smallest(int node,int k,vector<char> &str){
     if(k==0) return;
     map<char, int> ::iterator mit;
-    for(mit=st[node].next.begin(); mit!=st[node].next.end(); ++mit){
-        if(st[mit->second].height>=k-1){
+    for(mit=st[node].next.begin(); mit!=st[node].next.end();
+++mit){ if(st[mit->second].height>=k-1){
             str.push_back(mit->first);
             klen_smallest(mit->second,k-1,str);
             return;
@@ -84,7 +80,8 @@ void klen_smallest(int node,int k,vector<char> &str){
 void minimum_non_existing_string(int node,vector<char> &str){
     map<char, int> ::iterator mit;
     set<char>::iterator sit;
-    for(mit=st[node].next.begin(),sit=alphabet.begin(); sit!=alphabet.end(); ++sit,++mit){
+    for(mit=st[node].next.begin(),sit=alphabet.begin();
+                            sit!=alphabet.end(); ++sit,++mit){
         if(mit==st[node].next.end()||mit->first!=(*sit)){
             str.push_back(*sit);
             return;
@@ -96,12 +93,13 @@ void minimum_non_existing_string(int node,vector<char> &str){
         }
     }
 }
-void find_substrings(int node,int index,vector<char> &str,vector<pair<long long,long long> > &sub_info){
-    sub_info.push_back(make_pair(st[node].substrings,st[node].sublen+st[node].substrings*index));
+void find_substrings(int node,int index,vector<char> &str,
+vector<pair<long long,long long> > &sub_info){
+    sub_info.push_back(make_pair(st[node].substrings,
+                  st[node].sublen+st[node].substrings*index));
     if(index==str.size()) return;
-    if(st[node].next.count(str[index])){
-        find_substrings(st[node].next[str[index]],index+1,str,sub_info);
-        return;
+    if(st[node].next.count(str[index])){ find_substrings(
+        st[node].next[str[index]],index+1,str,sub_info);return;
     }
     else{
         sub_info.push_back(make_pair(0,0));
@@ -121,9 +119,8 @@ public:
         last=0;
         complete=false;
         set<char>::iterator sit;
-        for(sit=alpha.begin(); sit!=alpha.end(); sit++){
+        for(sit=alpha.begin(); sit!=alpha.end(); sit++)
             alphabet.insert(*sit);
-        }
         st[0].endpos=0;
     }
     void sa_extend(char c){
@@ -151,8 +148,7 @@ public:
                 st[clone].endpos=0;
                 st[clone].first_pos=st[q].first_pos;
                 while (p != -1 && st[p].next[c] == q){
-                    st[p].next[c] = clone;
-                    p = st[p].link;
+                    st[p].next[c] = clone; p = st[p].link;
                 }
                 st[q].link = st[cur].link = clone;
             }
@@ -180,7 +176,7 @@ public:
         else if(ind==-1) return st.size();
         else return st[ind].first_pos+1-(int) str.size();
     }
-    void FindAllOccurrenceIndex(vector<char> &str,vector<int> &pos){
+void FindAllOccurrenceIndex(vector<char> &str,vector<int>&pos){
         check();
         int ind=find_occurrence_index(0,0,str);
         if(ind!=-1) output_all_occurrences(ind,str.size(),pos);

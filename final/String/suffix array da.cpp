@@ -1,12 +1,14 @@
-/*
- sa => ith smallest suffix of the string
- rak => rak[i] indicates the position of suffix(i) in the suffix array
- height => height[i] indicates the LCP of i-1 and i th suffix
- *     LCP of suffix(i) & suffix(j) = { L = rak[i], R = rak[j] ,  min(height[L+1, R]);}*/
+/* sa => ith smallest suffix of the string
+rak => rak[i] indicates the position of suffix(i) in the suffix
+array; height => height[i] indicates the LCP of i-1 and i th 
+suffix; LCP of suffix(i) & suffix(j) = { L = rak[i], R = rak[j]
+ ,  min(height[L+1, R]);}*/
 const int maxn = 5e5+5;
 int wa[maxn],wb[maxn],wv[maxn],wc[maxn];
-int r[maxn],sa[maxn],rak[maxn], height[maxn],dp[maxn][22],jump[maxn], SIGMA = 0 ;
-int cmp(int *r,int a,int b,int l){return r[a] == r[b] && r[a+l] == r[b+l];}
+int r[maxn],sa[maxn],rak[maxn], height[maxn],dp[maxn][22],
+                                    jump[maxn], SIGMA = 0 ;
+int cmp(int *r,int a,int b,int l)
+                    {return r[a]==r[b]&&r[a+l]==r[b+l];}
 void da(int *r,int *sa,int n,int m){
     int i,j,p,*x=wa,*y=wb,*t;
     for( i=0;i<m;i++) wc[i]=0;
@@ -21,27 +23,26 @@ void da(int *r,int *sa,int n,int m){
         for(i=0;i<n;i++) wc[wv[i]] ++;
         for(i=1;i<m;i++) wc[i] += wc[i-1];
         for(i=n-1;i>=0;i--) sa[--wc[wv[i]]] = y[i];
-        for(t=x,x=y,y=t,p=1,x[sa[0]] = 0,i=1;i<n;i++) x[sa[i]]= cmp(y,sa[i-1],sa[i],j) ? p-1:p++;
+        for(t=x,x=y,y=t,p=1,x[sa[0]] = 0,i=1;i<n;i++) 
+                    x[sa[i]]= cmp(y,sa[i-1],sa[i],j) ? p-1:p++;
     }
 }
 void calheight(int *r,int *sa,int n){
     int i,j,k=0;
     for(i=1;i<=n;i++) rak[sa[i]] = i;
     for(i=0;i<n;height[rak[i++]] = k ) {
-        for(k?k--:0, j=sa[rak[i]-1] ; r[i+k] == r[j+k] ; k ++) ;
+        for(k?k--:0, j=sa[rak[i]-1] ; r[i+k] == r[j+k] ; k ++);
     }
 }
 void initRMQ(int n){
     for(int i= 0;i<=n;i++) dp[i][0] = height[i];
     for(int j= 1; (1<<j) <= n; j ++ ){
         for(int i = 0; i + (1<<j) - 1 <= n ; i ++ ) {
-            dp[i][j] = min(dp[i][j-1] , dp[i + (1<<(j-1))][j-1]);
+            dp[i][j] = min(dp[i][j-1] ,dp[i+(1<<(j-1))][j-1]);
         }
     }
     for(int i = 1;i <= n;i ++ ) {
-        int k = 0;
-        while((1 << (k+1)) <= i) k++;
-        jump[i] = k;
+        int k = 0; while((1 << (k+1)) <= i) k++;   jump[i] = k;
     }
 }
 int askRMQ(int L,int R){
@@ -49,13 +50,10 @@ int askRMQ(int L,int R){
     return min(dp[L][k], dp[R - (1<<k) + 1][k]);
 }
 int main(){
-    scanf("%s",s);
-    int n = strlen(s);
+    scanf("%s",s); int n = strlen(s);
     for(int i = 0; i < n; i ++) {
-        r[i] = s[i]-'a' + 1;
-        SIGMA = max(SIGMA, r[i]);
+        r[i] = s[i]-'a' + 1; SIGMA = max(SIGMA, r[i]);
     }
-    r[n] = 0;
-    da(r,sa,n+1,SIGMA + 1); // don't forget SIGMA + 1. It will ruin you.
+    r[n] = 0; da(r,sa,n+1,SIGMA + 1); 
     calheight(r,sa,n);
-}
+    /* don't forget SIGMA + 1. It will ruin you.*/ }

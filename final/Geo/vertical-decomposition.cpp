@@ -89,17 +89,18 @@ dbl union_area(vector<tuple<pt, pt, pt> > triangles){
     for(size_t i = 0; i < triangles.size(); i++){
         pt a, b, c;
         tie(a, b, c) = triangles[i];
-        segments[3 * i] = lexComp(a, b) ? Line(a, b) : Line(b, a);
-        segtype[3 * i] = get_segtype(segments[3 * i], c);
-        segments[3 * i + 1] = lexComp(b, c) ? Line(b, c) : Line(c, b);
-        segtype[3 * i + 1] = get_segtype(segments[3 * i + 1], a);
-        segments[3 * i + 2] = lexComp(c, a) ? Line(c, a) : Line(a, c);
-        segtype[3 * i + 2] = get_segtype(segments[3 * i + 2], b);
+segments[3 * i] = lexComp(a, b) ? Line(a, b) : Line(b, a);
+segtype[3 * i] = get_segtype(segments[3 * i], c);
+segments[3 * i + 1] = lexComp(b, c) ? Line(b, c) : Line(c, b);
+segtype[3 * i + 1] = get_segtype(segments[3 * i + 1], a);
+segments[3 * i + 2] = lexComp(c, a) ? Line(c, a) : Line(a, c);
+segtype[3 * i + 2] = get_segtype(segments[3 * i + 2], b);
     }
     vector<dbl> k(segments.size()), b(segments.size());
     for(size_t i = 0; i < segments.size(); i++){
         if(segtype[i]){
-            k[i] = (segments[i][1].y - segments[i][0].y) / (segments[i][1].x - segments[i][0].x);
+            k[i] = (segments[i][1].y - segments[i][0].y) /
+                         (segments[i][1].x - segments[i][0].x);
             b[i] = segments[i][0].y - k[i] * segments[i][0].x;
         }
     }
@@ -127,13 +128,13 @@ dbl union_area(vector<tuple<pt, pt, pt> > triangles){
                 }
             }
             else if(pts.size() == 1u){
-                dbl yl = k[i] * common_l + b[i], yl1 = k[j] * common_l + b[j];
+dbl yl = k[i] * common_l + b[i], yl1 = k[j] * common_l + b[j];
                 int evt_type = -segtype[i] * segtype[j];
                 if(lt(yl1, yl) == (segtype[i] == 1)){
                     evts.emplace_back(common_l, evt_type);
                     evts.emplace_back(pts[0].x, -evt_type);
                 }
-                yl = k[i] * common_r + b[i], yl1 = k[j] * common_r + b[j];
+    yl = k[i] * common_r + b[i], yl1 = k[j] * common_r + b[j];
                 if(lt(yl1, yl) == (segtype[i] == 1)){
                     evts.emplace_back(pts[0].x, evt_type);
                     evts.emplace_back(common_r, -evt_type);
@@ -146,10 +147,8 @@ dbl union_area(vector<tuple<pt, pt, pt> > triangles){
                 }
             }
         }
-        evts.emplace_back(l, 0);
-        sort(evts.begin(), evts.end());
-        size_t j = 0;
-        int balance = 0;
+        evts.emplace_back(l,0); sort(evts.begin(), evts.end());
+        size_t j = 0;   int balance = 0;
         while(j < evts.size()){
             size_t ptr = j;
             while(ptr < evts.size() && eq(evts[j].first, evts[ptr].first)){
@@ -170,13 +169,15 @@ pair<dbl,dbl> union_perimeter(vector<tuple<pt, pt, pt> > triangles){
     pair<dbl,dbl> ans = make_pair(0,0);
     for(size_t i = 0; i < segments.size(); i++){
         //Same as before
-        double dist=(segments[i][1].x-segments[i][0].x)*(segments[i][1].x-segments[i][0].x)+(segments[i][1].y-segments[i][0].y)*(segments[i][1].y-segments[i][0].y);
+        double dist=(segments[i][1].x-segments[i][0].x)
+                        *(segments[i][1].x-segments[i][0].x)
+                        +(segments[i][1].y-segments[i][0].y)
+                        *(segments[i][1].y-segments[i][0].y);
         dist=sqrt(dist);
         while(j < evts.size()){
             size_t ptr = j;
             while(ptr < evts.size() && eq(evts[j].first, evts[ptr].first)){
-                balance += evts[ptr].second;
-                ++ptr;
+                balance += evts[ptr].second; ++ptr;
             }
             if(!balance && !eq(evts[j].first, r)){
                 dbl next_x = ptr == evts.size() ? r : evts[ptr].first;
