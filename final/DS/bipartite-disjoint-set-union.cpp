@@ -15,11 +15,9 @@ void add_edge(int a, int b) {
     pair<int, int> pa = find_set(a);
     a = pa.first;
     int x = pa.second;
-
     pair<int, int> pb = find_set(b);
     b = pb.first;
     int y = pb.second;
-
     if (a == b) {
         if (x == y)
             bipartite[a] = false;
