@@ -35,6 +35,12 @@ struct custom_hash {
   }
 };
 gp_hash_table<pair<int,int>,int,custom_hash> ht;
+namespace my_gcc_ints {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+    using int128 = __int128;
+#pragma GCC diagnostic pop
+}
 # stresstester GENERATOR SOL1 SOL2 ITERATIONS
 for i in $(seq 1 "$4") ; do
     echo -en "\rAttempt $i/$4"
